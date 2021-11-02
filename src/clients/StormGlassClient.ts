@@ -53,13 +53,13 @@ export class StormGlassResponseError extends InternalError {
   }
 }
 
-export default class StormGlass {
+export default class StormGlassClient {
   readonly stormGlassAPIParams =
     "swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed";
   readonly stormGlassAPIFields = this.stormGlassAPIParams.split(",");
   readonly stormGlassAPISource = "noaa";
 
-  constructor(protected httpClient = new HttpClient()) { }
+  constructor(protected httpClient = new HttpClient()) {}
 
   async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {

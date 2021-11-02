@@ -1,4 +1,4 @@
-import StormGlass from "../StormGlass";
+import StormGlassClient from "../StormGlassClient";
 import stormGlassWeather3Hours from "@test/fixture/stormglass_weather_3_hours.json";
 import stormGlassWeather3HoursNormalized from "@test/fixture/stormglass_normalized_response_3_hours.json";
 import HttpClient, { HttpResponse } from "@src/util/HttpClient";
@@ -17,7 +17,7 @@ describe("StormGlass client", () => {
       data: stormGlassWeather3Hours,
     } as HttpResponse);
 
-    const stormGlass = new StormGlass(mockedHttpClient);
+    const stormGlass = new StormGlassClient(mockedHttpClient);
     const response = await stormGlass.fetchPoints(lat, lng);
     expect(response).toEqual(stormGlassWeather3HoursNormalized);
   });
@@ -38,7 +38,7 @@ describe("StormGlass client", () => {
       data: incompleteResponse,
     } as HttpResponse);
 
-    const stormGlass = new StormGlass(mockedHttpClient);
+    const stormGlass = new StormGlassClient(mockedHttpClient);
     const response = await stormGlass.fetchPoints(lat, lng);
     expect(response).toEqual([]);
   });
@@ -50,7 +50,7 @@ describe("StormGlass client", () => {
     MockedHttpClientClass.isRequestError.mockReturnValue(false);
     mockedHttpClient.get.mockRejectedValue({ message: "Network Error" });
 
-    const stormGlass = new StormGlass(mockedHttpClient);
+    const stormGlass = new StormGlassClient(mockedHttpClient);
     await expect(stormGlass.fetchPoints(lat, lng)).rejects.toThrow(
       "Unexpected error when trying to communicate to StormGlass: Network Error"
     );
@@ -68,7 +68,7 @@ describe("StormGlass client", () => {
       },
     });
 
-    const stormGlass = new StormGlass(mockedHttpClient);
+    const stormGlass = new StormGlassClient(mockedHttpClient);
     await expect(stormGlass.fetchPoints(lat, lng)).rejects.toThrow(
       'Unexpected error returned by the StormGlass service: Error: {"errors":["Rate Limit reached"]} Code: 429'
     );

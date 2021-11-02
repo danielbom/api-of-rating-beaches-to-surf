@@ -1,4 +1,4 @@
-import StormGlass, { ForecastPoint } from "@src/clients/StormGlass";
+import StormGlassClient, { ForecastPoint } from "@src/clients/StormGlassClient";
 
 export enum BeachPosition {
   S = "S",
@@ -15,13 +15,14 @@ export interface Beach {
   user: string;
 }
 
-export interface BeachForecast extends Omit<Beach, "user">, ForecastPoint {
-}
+export interface BeachForecast extends Omit<Beach, "user">, ForecastPoint { }
 
 export default class ForecastService {
-  constructor(protected stormGlass = new StormGlass()) { }
+  constructor(protected stormGlass = new StormGlassClient()) { }
 
-  public async processForecastForBeaches(beaches: Beach[]): Promise<BeachForecast[]> {
+  public async processForecastForBeaches(
+    beaches: Beach[]
+  ): Promise<BeachForecast[]> {
     const pointsWithCorrectSources: BeachForecast[] = [];
     for (const beach of beaches) {
       const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
