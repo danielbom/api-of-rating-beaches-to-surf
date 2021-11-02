@@ -16,7 +16,7 @@ module.exports = {
   coverageProvider: "v8",
   preset: "ts-jest",
   moduleNameMapper: {
-    "@src/{.*}": "<rootDir>/src/$1",
-    "@test/{.*}": "<rootDir>/test/$1",
+    "@src/(.*)": "<rootDir>/src/$1",
+    "@test/(.*)": "<rootDir>/test/$1",
   },
 };

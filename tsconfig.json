@@ -25,7 +25,11 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots" : [
+      "./node_modules/@types",
+      "./test/*.d.ts"
+    ]
   },
   "include": [
     "./src/**/*.ts",
