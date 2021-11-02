@@ -25,8 +25,9 @@ export interface StormGlassForecastResponse {
   hours: StormGlassPoint[];
 }
 
+type ISODate = string;
 export interface ForecastPoint {
-  time: string;
+  time: ISODate;
   swellDirection: number;
   swellHeight: number;
   swellPeriod: number;
