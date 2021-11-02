@@ -1,4 +1,5 @@
 import { AxiosStatic } from "axios";
+import InternalError from "@src/util/errors/InternalError";
 
 export interface StormGlassPointSource {
   [key: string]: number | undefined;
@@ -30,6 +31,22 @@ export interface ForecastPoint {
   windSpeed: number;
 }
 
+export class ClientRequestError extends InternalError {
+  constructor(message: string) {
+    const internalMessage =
+      "Unexpected error when trying to communicate to StormGlass";
+    super(`${internalMessage}: ${message}`);
+  }
+}
+
+export class StormGlassResponseError extends InternalError {
+  constructor(message: string) {
+    const internalMessage =
+      "Unexpected error returned by the StormGlass service";
+    super(`${internalMessage}: ${message}`);
+  }
+}
+
 export default class StormGlass {
   readonly stormGlassAPIParams =
     "swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed";
@@ -39,13 +56,28 @@ export default class StormGlass {
   constructor(protected requester: AxiosStatic) {}
 
   async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
-    const url = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`;
-    const response = await this.requester.get<StormGlassForecastResponse>(url, {
-      headers: {
-        Authorization: "fake-token",
-      },
-    });
-    return this.normalizeResponse(response.data);
+    try {
+      const url = `https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`;
+      const response = await this.requester.get<StormGlassForecastResponse>(
+        url,
+        {
+          headers: {
+            Authorization: "fake-token",
+          },
+        }
+      );
+      return this.normalizeResponse(response.data);
+    } catch (unkErr) {
+      const err: any = unkErr;
+      if (err?.response?.status) {
+        const error = JSON.stringify(err.response.data);
+        throw new StormGlassResponseError(
+          `Error: ${error} Code: ${err.response.status}`
+        );
+      } else {
+        throw new ClientRequestError(err.message);
+      }
+    }
   }
 
   private isValidPoint(point?: StormGlassPoint): boolean {
@@ -53,8 +85,7 @@ export default class StormGlass {
       point &&
       point.time &&
       this.stormGlassAPIFields.every(
-        (f) =>
-          typeof (point as any)[f][this.stormGlassAPISource] !== "undefined"
+        (f) => (point as any)[f]?.[this.stormGlassAPISource] ?? false
       )
     );
   }
