@@ -1,9 +1,10 @@
 /* eslint-disable max-classes-per-file */
 import StormGlassClient, { ForecastPoint } from '@src/clients/StormGlassClient';
+import Logger from '@src/Logger';
 import { Beach } from '@src/models/BeachRepository';
 import InternalError from '@src/util/errors/InternalError';
 
-export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
+export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint { }
 
 type ISODate = string;
 export interface TimeForecast {
@@ -18,12 +19,13 @@ export class ForecastProcessingInternalError extends InternalError {
 }
 
 export default class ForecastService {
-  constructor(protected stormGlass = new StormGlassClient()) {}
+  constructor(protected stormGlass = new StormGlassClient()) { }
 
   public async processForecastForBeaches(
     beaches: Beach[],
   ): Promise<TimeForecast[]> {
     try {
+      Logger.info(`Preparing the forecast for ${beaches.length} beaches`);
       const allPoints = await Promise.all(
         beaches.map(async (beach) => {
           const points = await this.stormGlass.fetchPoints(
@@ -35,8 +37,8 @@ export default class ForecastService {
       );
       const pointsWithCorrectSources: BeachForecast[] = allPoints.flat();
       return this.groupForecastByTime(pointsWithCorrectSources);
-    } catch (unkErr) {
-      const err: any = unkErr;
+    } catch (err: any) {
+      Logger.error(err);
       throw new ForecastProcessingInternalError(err.message);
     }
   }

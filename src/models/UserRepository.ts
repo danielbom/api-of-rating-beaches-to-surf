@@ -1,3 +1,4 @@
+import Logger from '@src/Logger';
 import AuthService from '@src/services/AuthService';
 import mongoose, { Document, Model } from 'mongoose';
 
@@ -12,7 +13,7 @@ export enum CustomValidation {
   DUPLICATED = 'DUPLICATED',
 }
 
-interface UserModel extends Omit<User, '_id'>, Document {}
+interface UserModel extends Omit<User, '_id'>, Document { }
 
 const schema = new mongoose.Schema(
   {
@@ -52,8 +53,7 @@ schema.pre<UserModel>('save', async function preSaveUser(): Promise<void> {
       const hashedPassword = await AuthService.hashPassword(this.password);
       this.password = hashedPassword;
     } catch (err) {
-      // eslint-disable-next-line
-      console.error(`Error hashing the password for the user ${this.name}`);
+      Logger.error(`Error hashing the password for the user (${this.id}) ${this.name}`, err);
     }
   }
 });

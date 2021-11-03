@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { Response } from 'express';
 import { CustomValidation } from '@src/models/UserRepository';
+import Logger from '@src/Logger';
 
 export default abstract class BaseController {
   protected sendCreatedUpdateErrorResponse(
@@ -11,6 +12,7 @@ export default abstract class BaseController {
       const clientErrors = this.handleClientErrors(error);
       response.status(clientErrors.code).send(clientErrors);
     } else {
+      Logger.error(error);
       response.status(500).send({ code: 500, error: 'Something went wrong' });
     }
   }

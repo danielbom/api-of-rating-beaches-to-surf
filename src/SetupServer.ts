@@ -5,6 +5,7 @@ import Database from './Database';
 import ForecastController from './controllers/ForecastController';
 import BeachesController from './controllers/BeachesController';
 import UsersController from './controllers/UserController';
+import Logger from './Logger';
 
 export default class SetupServer extends Server {
   constructor(private port = 3000, private database = new Database()) {
@@ -13,8 +14,7 @@ export default class SetupServer extends Server {
 
   start() {
     this.app.listen(this.port, () => {
-      // eslint-disable-next-line
-      console.info(`Server listening on: http://localhost:${this.port}`);
+      Logger.info(`Server listening on: http://localhost:${this.port}`);
     });
   }
 
