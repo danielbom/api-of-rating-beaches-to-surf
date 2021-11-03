@@ -30,7 +30,7 @@ export default class UsersController extends BaseController {
       const isPasswordValid = await AuthService.comparePasswords(user.password, password);
       if (isPasswordValid) {
         const userData = user.toJSON();
-        const token = await AuthService.generateToken(userData);
+        const token = await AuthService.generateToken({ id: userData.id });
         response.send({ ...userData, token });
       } else {
         response

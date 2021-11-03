@@ -10,5 +10,6 @@ data='''{
 
 curl -s \
   -H "Content-Type: application/json" \
+  -H "Authorization: $token" \
   -d "$data" \
   -X POST "$baseUrl/beaches"

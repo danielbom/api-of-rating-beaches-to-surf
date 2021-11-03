@@ -1,8 +1,21 @@
 import BeachRepository, { BeachPosition } from '@src/models/BeachRepository';
+import UserRepository from '@src/models/UserRepository';
+import AuthService from '@src/services/AuthService';
 
 describe('Beaches functional tests', () => {
-  beforeAll(async () => {
+  const defaultUser = {
+    name: 'John Doe',
+    email: 'john2@mail.com',
+    password: '1234',
+  };
+  let token: string;
+
+  beforeEach(async () => {
     await BeachRepository.deleteMany();
+    await UserRepository.deleteMany();
+    const user = await new UserRepository(defaultUser).save();
+    const userId = user.id.toString();
+    token = AuthService.generateToken({ id: userId });
   });
 
   describe('When creating a beach', () => {
@@ -14,7 +27,9 @@ describe('Beaches functional tests', () => {
         position: BeachPosition.E,
       };
 
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await global.testRequest.post('/beaches')
+        .set({ Authorization: `Bearer ${token}` })
+        .send(newBeach);
       expect(response.status).toBe(201);
       expect(response.body).toEqual(expect.objectContaining(newBeach));
     });
@@ -26,7 +41,9 @@ describe('Beaches functional tests', () => {
         name: 'Manly',
         position: BeachPosition.E,
       };
-      const response = await global.testRequest.post('/beaches').send(newBeach);
+      const response = await global.testRequest.post('/beaches')
+        .set({ Authorization: `Bearer ${token}` })
+        .send(newBeach);
 
       expect(response.status).toBe(422);
       expect(response.body).toEqual({

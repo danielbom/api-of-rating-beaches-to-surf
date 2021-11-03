@@ -58,5 +58,10 @@ schema.pre<UserModel>('save', async function preSaveUser(): Promise<void> {
   }
 });
 
+schema.virtual('id').get(function getUserId(this: UserModel) {
+  // eslint-disable-next-line
+  return this._id;
+});
+
 const UserRepository: Model<UserModel> = mongoose.model('User', schema);
 export default UserRepository;

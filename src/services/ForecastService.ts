@@ -3,7 +3,7 @@ import StormGlassClient, { ForecastPoint } from '@src/clients/StormGlassClient';
 import { Beach } from '@src/models/BeachRepository';
 import InternalError from '@src/util/errors/InternalError';
 
-export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
+export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint { }
 
 type ISODate = string;
 export interface TimeForecast {
@@ -18,7 +18,7 @@ export class ForecastProcessingInternalError extends InternalError {
 }
 
 export default class ForecastService {
-  constructor(protected stormGlass = new StormGlassClient()) {}
+  constructor(protected stormGlass = new StormGlassClient()) { }
 
   public async processForecastForBeaches(
     beaches: Beach[],
@@ -26,8 +26,8 @@ export default class ForecastService {
     try {
       const allPoints = await Promise.all(
         beaches.map(async (beach) => {
-          const point = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-          return this.enrichPointsData(point, beach);
+          const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
+          return this.enrichPointsData(points, beach);
         }),
       );
       const pointsWithCorrectSources: BeachForecast[] = allPoints.flat();

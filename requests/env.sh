@@ -1,1 +1,2 @@
 baseUrl="http://localhost:3000"
+token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxODJlOTViZGUyMTlkOTFkMzE1ODFiZCIsImlhdCI6MTYzNTk2OTM4MSwiZXhwIjoxNjM2NTc0MTgxfQ.OnD0m76VtiVj8WkDHNVNtfSaqiqS9SKzOk66NtoOk80"
