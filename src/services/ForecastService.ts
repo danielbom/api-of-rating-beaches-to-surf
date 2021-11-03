@@ -1,14 +1,7 @@
 import StormGlassClient, { ForecastPoint } from "@src/clients/StormGlassClient";
-import { BeachPosition } from "@src/models/BeachRepository";
+import { Beach } from "@src/models/BeachRepository";
 import InternalError from "@src/util/errors/InternalError";
 
-export interface Beach {
-  name: string;
-  position: BeachPosition;
-  lat: number;
-  lng: number;
-  user: string;
-}
 
 export interface BeachForecast extends Omit<Beach, "user">, ForecastPoint { }
 
