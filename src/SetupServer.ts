@@ -1,6 +1,7 @@
 import './util/module-alias';
 import { Server } from '@overnightjs/core';
 import express, { Application } from 'express';
+import http from "http";
 import Database from './Database';
 import ForecastController from './controllers/ForecastController';
 import BeachesController from './controllers/BeachesController';
@@ -8,14 +9,10 @@ import UsersController from './controllers/UserController';
 import Logger from './Logger';
 
 export default class SetupServer extends Server {
+  private server?: http.Server;
+
   constructor(private port = 3000, private database = new Database()) {
     super();
-  }
-
-  start() {
-    this.app.listen(this.port, () => {
-      Logger.info(`Server listening on: http://localhost:${this.port}`);
-    });
   }
 
   public getApp(): Application {
@@ -44,7 +41,24 @@ export default class SetupServer extends Server {
     await this.database.connect();
   }
 
+  start() {
+    this.server = this.app.listen(this.port, () => {
+      Logger.info(`Server listening on: http://localhost:${this.port}`);
+    });
+  }
+
   public async close() {
     await this.database.close();
+    if (this.server) {
+      await new Promise((resolve, reject) => {
+        this.server?.close((err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(null);
+          }
+        });
+      });
+    }
   }
 }
