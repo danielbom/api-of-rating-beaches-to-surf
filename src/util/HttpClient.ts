@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type HttpConfig = AxiosRequestConfig;
 
@@ -9,7 +9,7 @@ export default class HttpClient {
 
   public get<T>(
     url: string,
-    config: HttpConfig = {}
+    config: HttpConfig = {},
   ): Promise<HttpResponse<T>> {
     return this.requester.get<T, HttpResponse<T>>(url, config);
   }

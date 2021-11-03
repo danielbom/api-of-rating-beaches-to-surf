@@ -1,10 +1,10 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model } from 'mongoose';
 
 export enum BeachPosition {
-  S = "S",
-  E = "E",
-  W = "W",
-  N = "N",
+  S = 'S',
+  E = 'E',
+  W = 'W',
+  N = 'N',
 }
 
 export interface Beach {
@@ -32,11 +32,11 @@ const schema = new mongoose.Schema(
         /* eslint-enable */
       },
     },
-  }
+  },
 );
 
-interface BeachModel extends Omit<Beach, "_id">, Document {}
+interface BeachModel extends Omit<Beach, '_id'>, Document {}
 
-const BeachRepository: Model<BeachModel> = mongoose.model("Beach", schema);
+const BeachRepository: Model<BeachModel> = mongoose.model('Beach', schema);
 
 export default BeachRepository;

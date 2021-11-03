@@ -1,8 +1,7 @@
-import supertest from "supertest";
-import SetupServer from "@src/SetupServer";
+import supertest from 'supertest';
+import SetupServer from '@src/SetupServer';
 
-const sleep = (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time));
+const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
 
 let server: SetupServer;
 

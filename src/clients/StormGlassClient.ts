@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import InternalError from "@src/util/errors/InternalError";
-import config, { IConfig } from "config";
-import HttpClient from "@src/util/HttpClient";
+import InternalError from '@src/util/errors/InternalError';
+import config, { IConfig } from 'config';
+import HttpClient from '@src/util/HttpClient';
 
 const stormGlassResourceConfig: IConfig = config.get(
-  "App.resources.StormGlass"
+  'App.resources.StormGlass',
 );
 
 export interface StormGlassPointSource {
@@ -40,39 +40,39 @@ export interface ForecastPoint {
 
 export class ClientRequestError extends InternalError {
   constructor(message: string) {
-    const internalMessage =
-      "Unexpected error when trying to communicate to StormGlass";
+    const internalMessage = 'Unexpected error when trying to communicate to StormGlass';
     super(`${internalMessage}: ${message}`);
   }
 }
 
 export class StormGlassResponseError extends InternalError {
   constructor(message: string) {
-    const internalMessage =
-      "Unexpected error returned by the StormGlass service";
+    const internalMessage = 'Unexpected error returned by the StormGlass service';
     super(`${internalMessage}: ${message}`);
   }
 }
 
 export default class StormGlassClient {
   readonly stormGlassAPIParams =
-    "swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed";
-  readonly stormGlassAPIFields = this.stormGlassAPIParams.split(",");
-  readonly stormGlassAPISource = "noaa";
+  'swellDirection,swellHeight,swellPeriod,waveDirection,waveHeight,windDirection,windSpeed';
 
-  constructor(protected httpClient = new HttpClient()) { }
+  readonly stormGlassAPIFields = this.stormGlassAPIParams.split(',');
+
+  readonly stormGlassAPISource = 'noaa';
+
+  constructor(protected httpClient = new HttpClient()) {}
 
   async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {
-      const STORM_GLASS_API_URL = stormGlassResourceConfig.get("apiUrl");
+      const STORM_GLASS_API_URL = stormGlassResourceConfig.get('apiUrl');
       const url = `${STORM_GLASS_API_URL}/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`;
       const response = await this.httpClient.get<StormGlassForecastResponse>(
         url,
         {
           headers: {
-            Authorization: "fake-token",
+            Authorization: 'fake-token',
           },
-        }
+        },
       );
       return this.normalizeResponse(response.data);
     } catch (unkErr) {
@@ -89,16 +89,16 @@ export default class StormGlassClient {
 
   private isValidPoint(point?: StormGlassPoint): boolean {
     return !!(
-      point &&
-      point.time &&
-      this.stormGlassAPIFields.every(
-        (f) => (point as any)[f]?.[this.stormGlassAPISource] ?? false
+      point
+      && point.time
+      && this.stormGlassAPIFields.every(
+        (f) => (point as any)[f]?.[this.stormGlassAPISource] ?? false,
       )
     );
   }
 
   private normalizeResponse(
-    response: StormGlassForecastResponse
+    response: StormGlassForecastResponse,
   ): ForecastPoint[] {
     return response.hours
       .filter((x) => this.isValidPoint(x))

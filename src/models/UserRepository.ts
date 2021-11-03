@@ -1,5 +1,5 @@
-import AuthService from "@src/services/AuthService";
-import mongoose, { Document, Model } from "mongoose";
+import AuthService from '@src/services/AuthService';
+import mongoose, { Document, Model } from 'mongoose';
 
 export interface User {
   _id?: string;
@@ -9,10 +9,10 @@ export interface User {
 }
 
 export enum CustomValidation {
-  DUPLICATED = "DUPLICATED",
+  DUPLICATED = 'DUPLICATED',
 }
 
-interface UserModel extends Omit<User, "_id">, Document {}
+interface UserModel extends Omit<User, '_id'>, Document {}
 
 const schema = new mongoose.Schema(
   {
@@ -34,20 +34,20 @@ const schema = new mongoose.Schema(
         /* eslint-enable */
       },
     },
-  }
+  },
 );
 
-schema.path("email").validate(
+schema.path('email').validate(
   async (email: string) => {
     const emailCount = await mongoose.models.User.countDocuments({ email });
     return !emailCount;
   },
-  "already exists in the database.",
-  CustomValidation.DUPLICATED
+  'already exists in the database.',
+  CustomValidation.DUPLICATED,
 );
 
-schema.pre<UserModel>("save", async function preSaveUser(): Promise<void> {
-  if (this.password && this.isModified("password")) {
+schema.pre<UserModel>('save', async function preSaveUser(): Promise<void> {
+  if (this.password && this.isModified('password')) {
     try {
       const hashedPassword = await AuthService.hashPassword(this.password);
       this.password = hashedPassword;
@@ -58,5 +58,5 @@ schema.pre<UserModel>("save", async function preSaveUser(): Promise<void> {
   }
 });
 
-const UserRepository: Model<UserModel> = mongoose.model("User", schema);
+const UserRepository: Model<UserModel> = mongoose.model('User', schema);
 export default UserRepository;

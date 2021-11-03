@@ -1,11 +1,11 @@
-import { Controller, Post } from "@overnightjs/core";
-import { Request, Response } from "express";
-import BeachRepository from "@src/models/BeachRepository";
-import BaseController from "./BaseController";
+import { Controller, Post } from '@overnightjs/core';
+import { Request, Response } from 'express';
+import BeachRepository from '@src/models/BeachRepository';
+import BaseController from './BaseController';
 
-@Controller("beaches")
+@Controller('beaches')
 export default class BeachesController extends BaseController {
-  @Post("")
+  @Post('')
   public async create(request: Request, response: Response): Promise<void> {
     try {
       const beach = new BeachRepository(request.body);

@@ -1,9 +1,9 @@
 /* eslint-disable max-classes-per-file */
-import StormGlassClient, { ForecastPoint } from "@src/clients/StormGlassClient";
-import { Beach } from "@src/models/BeachRepository";
-import InternalError from "@src/util/errors/InternalError";
+import StormGlassClient, { ForecastPoint } from '@src/clients/StormGlassClient';
+import { Beach } from '@src/models/BeachRepository';
+import InternalError from '@src/util/errors/InternalError';
 
-export interface BeachForecast extends Omit<Beach, "user">, ForecastPoint {}
+export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint {}
 
 type ISODate = string;
 export interface TimeForecast {
@@ -21,14 +21,14 @@ export default class ForecastService {
   constructor(protected stormGlass = new StormGlassClient()) {}
 
   public async processForecastForBeaches(
-    beaches: Beach[]
+    beaches: Beach[],
   ): Promise<TimeForecast[]> {
     try {
       const allPoints = await Promise.all(
         beaches.map(async (beach) => {
           const point = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
           return this.enrichPointsData(point, beach);
-        })
+        }),
       );
       const pointsWithCorrectSources: BeachForecast[] = allPoints.flat();
       return this.groupForecastByTime(pointsWithCorrectSources);
@@ -40,7 +40,7 @@ export default class ForecastService {
 
   private enrichPointsData(
     points: ForecastPoint[],
-    beach: Beach
+    beach: Beach,
   ): BeachForecast[] {
     return points.map((e) => ({
       lat: beach.lat,
