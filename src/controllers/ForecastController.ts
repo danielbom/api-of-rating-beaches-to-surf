@@ -4,10 +4,11 @@ import authMiddleware from '@src/middlewares/authMiddleware';
 import BeachRepository, { Beach } from '@src/models/BeachRepository';
 import ForecastService from '@src/services/ForecastService';
 import { Request, Response } from 'express';
+import BaseController from './BaseController';
 
 @Controller('forecast')
 @ClassMiddleware(authMiddleware)
-export default class ForecastController {
+export default class ForecastController extends BaseController {
   private forecastService = new ForecastService();
 
   @Get('')
@@ -24,7 +25,7 @@ export default class ForecastController {
       response.status(200).send(forecastData);
     } catch (err: any) {
       Logger.error(err);
-      response.status(500).send({ message: 'Something went wrong' });
+      this.sendErrorResponse(response, { code: 500, message: 'Something went wrong' });
     }
   }
 }

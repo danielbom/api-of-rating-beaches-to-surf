@@ -1,6 +1,9 @@
 {
     "App": {
         "port": "APP_PORT",
+        "cors": {
+            "origin": "CORS_ORIGIN"
+        },
         "database": {
             "mongoUrl": "MONGODB_URL"
         },

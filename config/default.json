@@ -1,6 +1,9 @@
 {
     "App": {
         "port": 3000,
+        "cors": {
+            "origin": "*"
+        },
         "database": {
             "mongoUrl": "mongodb://localhost:27017/surf-forecast"
         },
