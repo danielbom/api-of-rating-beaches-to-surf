@@ -38,17 +38,17 @@ describe("Beach forecast functional tests", () => {
     expect(body).toEqual(apiForecastResponse1Beach);
   });
 
-  it('should return 500 if something goes wrong during the processing', async () => {
-    nock('https://api.stormglass.io:443', {
+  it("should return 500 if something goes wrong during the processing", async () => {
+    nock("https://api.stormglass.io:443", {
       encodedQueryParams: true,
       reqheaders: {
         Authorization: (): boolean => true,
       },
     })
-      .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
-      .get('/v1/weather/point')
-      .query({ lat: '-33.792726', lng: '151.289824' })
-      .replyWithError('Something went wrong');
+      .defaultReplyHeaders({ "access-control-allow-origin": "*" })
+      .get("/v1/weather/point")
+      .query({ lat: "-33.792726", lng: "151.289824" })
+      .replyWithError("Something went wrong");
 
     const { status } = await global.testRequest.get(`/forecast`);
 

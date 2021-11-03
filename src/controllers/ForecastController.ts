@@ -19,7 +19,7 @@ export default class ForecastController {
       );
       response.status(200).send(forecastData);
     } catch (err: any) {
-      response.status(500).send({ message: 'Something went wrong' })
+      response.status(500).send({ message: "Something went wrong" });
     }
   }
 }

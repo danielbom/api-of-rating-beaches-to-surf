@@ -10,8 +10,10 @@ export default class SetupServer extends Server {
     super();
   }
 
-  start(callback?: () => {}) {
-    this.app.listen(this.port, callback);
+  start() {
+    this.app.listen(this.port, () => {
+      console.info(`Server listening on: http://localhost:${this.port}`);
+    });
   }
 
   public getApp(): Application {
