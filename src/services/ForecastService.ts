@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import StormGlassClient, { ForecastPoint } from "@src/clients/StormGlassClient";
 import { Beach } from "@src/models/BeachRepository";
 import InternalError from "@src/util/errors/InternalError";
@@ -23,12 +24,13 @@ export default class ForecastService {
     beaches: Beach[]
   ): Promise<TimeForecast[]> {
     try {
-      const pointsWithCorrectSources: BeachForecast[] = [];
-      for (const beach of beaches) {
-        const points = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
-        const enrichedPointsData = this.enrichPointsData(points, beach);
-        pointsWithCorrectSources.push(...enrichedPointsData);
-      }
+      const allPoints = await Promise.all(
+        beaches.map(async (beach) => {
+          const point = await this.stormGlass.fetchPoints(beach.lat, beach.lng);
+          return this.enrichPointsData(point, beach);
+        })
+      );
+      const pointsWithCorrectSources: BeachForecast[] = allPoints.flat();
       return this.groupForecastByTime(pointsWithCorrectSources);
     } catch (unkErr) {
       const err: any = unkErr;
@@ -58,6 +60,7 @@ export default class ForecastService {
   }
 
   private groupForecastByTime(forecasts: BeachForecast[]): TimeForecast[] {
+    /* eslint-disable */
     const forecastByTime = forecasts.reduce((dict, x) => {
       if (dict[x.time]) {
         dict[x.time].push(x);
@@ -66,6 +69,7 @@ export default class ForecastService {
       }
       return dict;
     }, {} as Record<string, BeachForecast[]>);
+    /* eslint-enable */
 
     return Object.entries(forecastByTime).map(([time, forecast]) => ({
       time,

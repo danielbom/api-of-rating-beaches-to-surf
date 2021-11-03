@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 import InternalError from "@src/util/errors/InternalError";
 import config, { IConfig } from "config";
 import HttpClient from "@src/util/HttpClient";
@@ -59,7 +60,7 @@ export default class StormGlassClient {
   readonly stormGlassAPIFields = this.stormGlassAPIParams.split(",");
   readonly stormGlassAPISource = "noaa";
 
-  constructor(protected httpClient = new HttpClient()) {}
+  constructor(protected httpClient = new HttpClient()) { }
 
   async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {
@@ -101,17 +102,15 @@ export default class StormGlassClient {
   ): ForecastPoint[] {
     return response.hours
       .filter((x) => this.isValidPoint(x))
-      .map((x) => {
-        return {
-          time: x.time!,
-          swellDirection: x.swellDirection![this.stormGlassAPISource]!,
-          swellHeight: x.swellHeight![this.stormGlassAPISource]!,
-          swellPeriod: x.swellPeriod![this.stormGlassAPISource]!,
-          waveDirection: x.waveDirection![this.stormGlassAPISource]!,
-          waveHeight: x.waveHeight![this.stormGlassAPISource]!,
-          windDirection: x.windDirection![this.stormGlassAPISource]!,
-          windSpeed: x.windSpeed![this.stormGlassAPISource]!,
-        };
-      });
+      .map((x: any) => ({
+        time: x.time,
+        swellDirection: x.swellDirection[this.stormGlassAPISource],
+        swellHeight: x.swellHeight[this.stormGlassAPISource],
+        swellPeriod: x.swellPeriod[this.stormGlassAPISource],
+        waveDirection: x.waveDirection[this.stormGlassAPISource],
+        waveHeight: x.waveHeight[this.stormGlassAPISource],
+        windDirection: x.windDirection[this.stormGlassAPISource],
+        windSpeed: x.windSpeed[this.stormGlassAPISource],
+      }));
   }
 }

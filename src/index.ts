@@ -1,5 +1,5 @@
-import SetupServer from "./SetupServer";
 import config from "config";
+import SetupServer from "./SetupServer";
 
 async function bootstrap() {
   const setupSever = new SetupServer(config.get("App.port"));

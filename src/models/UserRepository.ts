@@ -7,7 +7,7 @@ export interface User {
   password: string;
 }
 
-export enum CUSTOM_VALIDATION {
+export enum CustomValidation {
   DUPLICATED = "DUPLICATED",
 }
 
@@ -26,9 +26,11 @@ const schema = new mongoose.Schema(
   {
     toJSON: {
       transform: (_, ret): void => {
+        /* eslint-disable */
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        /* eslint-enable */
       },
     },
   }
@@ -40,7 +42,7 @@ schema.path("email").validate(
     return !emailCount;
   },
   "already exists in the database.",
-  CUSTOM_VALIDATION.DUPLICATED
+  CustomValidation.DUPLICATED
 );
 
 const UserRepository: Model<UserModel> = mongoose.model("User", schema);

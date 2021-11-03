@@ -1,7 +1,7 @@
-import StormGlassClient from "../StormGlassClient";
 import stormGlassWeather3Hours from "@test/fixture/stormglass_weather_3_hours.json";
 import stormGlassWeather3HoursNormalized from "@test/fixture/stormglass_normalized_response_3_hours.json";
 import HttpClient, { HttpResponse } from "@src/util/HttpClient";
+import StormGlassClient from "../StormGlassClient";
 
 jest.mock("@src/util/HttpClient");
 

@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
-export interface HttpConfig extends AxiosRequestConfig {}
+export type HttpConfig = AxiosRequestConfig;
 
-export interface HttpResponse<T = any> extends AxiosResponse<T> {}
+export type HttpResponse<T = any> = AxiosResponse<T>;
 
 export default class HttpClient {
   constructor(private requester = axios) {}

@@ -13,6 +13,7 @@ export default class SetupServer extends Server {
 
   start() {
     this.app.listen(this.port, () => {
+      // eslint-disable-next-line
       console.info(`Server listening on: http://localhost:${this.port}`);
     });
   }

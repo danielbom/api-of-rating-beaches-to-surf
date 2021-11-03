@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { Response } from "express";
-import { CUSTOM_VALIDATION } from "@src/models/UserRepository";
+import { CustomValidation } from "@src/models/UserRepository";
 
 export default abstract class BaseController {
   protected sendCreatedUpdateErrorResponse(
@@ -20,12 +20,11 @@ export default abstract class BaseController {
     error: string;
   } {
     const duplicatedValidationErrors = Object.values(error.errors).filter(
-      (err: any) => err?.kind === CUSTOM_VALIDATION.DUPLICATED
+      (err: any) => err?.kind === CustomValidation.DUPLICATED
     );
     if (duplicatedValidationErrors.length > 0) {
       return { code: 409, error: error.message };
-    } else {
-      return { code: 422, error: error.message };
     }
+    return { code: 422, error: error.message };
   }
 }

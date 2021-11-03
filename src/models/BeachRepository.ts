@@ -25,9 +25,11 @@ const schema = new mongoose.Schema(
   {
     toJSON: {
       transform(_, ret): void {
+        /* eslint-disable */
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
+        /* eslint-enable */
       },
     },
   }
