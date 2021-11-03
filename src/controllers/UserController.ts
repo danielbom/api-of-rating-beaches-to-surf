@@ -1,7 +1,10 @@
-import { Controller, Post } from '@overnightjs/core';
+import {
+  Middleware, Controller, Get, Post,
+} from '@overnightjs/core';
 import { Response, Request } from 'express';
 import UserRepository from '@src/models/UserRepository';
 import AuthService from '@src/services/AuthService';
+import authMiddleware from '@src/middlewares/authMiddleware';
 import BaseController from './BaseController';
 
 @Controller('users')
@@ -44,6 +47,21 @@ export default class UsersController extends BaseController {
           message: 'Password does not match!',
         });
       }
+    }
+  }
+
+  @Get('me')
+  @Middleware(authMiddleware)
+  public async me(request: Request, response: Response): Promise<void> {
+    const userId = request?.decoded?.id;
+    const user = await UserRepository.findById(userId);
+    if (!user) {
+      this.sendErrorResponse(response, {
+        code: 404,
+        message: 'User not found!',
+      });
+    } else {
+      response.send(user);
     }
   }
 }

@@ -97,4 +97,39 @@ describe('Users functional tests', () => {
       expect(response.status).toBe(401);
     });
   });
+
+  describe('When getting user profile info', () => {
+    it('Should return the token\'s owner profile information', async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john@mail.com',
+        password: '1234',
+      };
+      const user = await new UserRepository(newUser).save();
+      const token = AuthService.generateToken({ id: user.id.toString() });
+      const { body, status } = await global.testRequest
+        .get('/users/me')
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(status).toBe(200);
+      expect(body).toMatchObject(user.toJSON());
+    });
+
+    it('Should return Not Found, when the user is not found', async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john@mail.com',
+        password: '1234',
+      };
+      // create a new user but don't save it
+      const user = new UserRepository(newUser);
+      const token = AuthService.generateToken({ id: user.id.toString() });
+      const { body, status } = await global.testRequest
+        .get('/users/me')
+        .set({ Authorization: `Bearer ${token}` });
+
+      expect(status).toBe(404);
+      expect(body.message).toBe('User not found!');
+    });
+  });
 });
