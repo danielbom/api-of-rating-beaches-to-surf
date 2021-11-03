@@ -1,9 +1,10 @@
 import "./util/module-alias";
 import { Server } from "@overnightjs/core";
 import express, { Application } from "express";
-import ForecastController from "./controllers/ForecastController";
 import Database from "./Database";
+import ForecastController from "./controllers/ForecastController";
 import BeachesController from "./controllers/BeachesController";
+import UsersController from "./controllers/UserController";
 
 export default class SetupServer extends Server {
   constructor(private port = 3000, private database = new Database()) {
@@ -31,7 +32,11 @@ export default class SetupServer extends Server {
   }
 
   private setupControllers(): void {
-    this.addControllers([new ForecastController(), new BeachesController()]);
+    this.addControllers([
+      new ForecastController(),
+      new BeachesController(),
+      new UsersController(),
+    ]);
   }
 
   private async setupDatabase(): Promise<void> {
