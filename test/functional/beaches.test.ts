@@ -27,7 +27,8 @@ describe('Beaches functional tests', () => {
         position: BeachPosition.E,
       };
 
-      const response = await global.testRequest.post('/beaches')
+      const response = await global.testRequest
+        .post('/beaches')
         .set({ Authorization: `Bearer ${token}` })
         .send(newBeach);
       expect(response.status).toBe(201);
@@ -41,7 +42,8 @@ describe('Beaches functional tests', () => {
         name: 'Manly',
         position: BeachPosition.E,
       };
-      const response = await global.testRequest.post('/beaches')
+      const response = await global.testRequest
+        .post('/beaches')
         .set({ Authorization: `Bearer ${token}` })
         .send(newBeach);
 

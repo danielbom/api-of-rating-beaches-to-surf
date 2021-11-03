@@ -18,7 +18,10 @@ export default class UsersController extends BaseController {
   }
 
   @Post('authenticate')
-  public async authenticate(request: Request, response: Response): Promise<void> {
+  public async authenticate(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
     const { email, password } = request.body;
     const user = await UserRepository.findOne({ email });
     if (!user) {
@@ -27,7 +30,10 @@ export default class UsersController extends BaseController {
         error: 'User not found!',
       });
     } else {
-      const isPasswordValid = await AuthService.comparePasswords(user.password, password);
+      const isPasswordValid = await AuthService.comparePasswords(
+        user.password,
+        password,
+      );
       if (isPasswordValid) {
         const userData = user.toJSON();
         const token = await AuthService.generateToken({ id: userData.id });
