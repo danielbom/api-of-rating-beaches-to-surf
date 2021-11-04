@@ -1,4 +1,4 @@
-import BeachRepository, { BeachPosition } from '@src/models/BeachRepository';
+import BeachRepository, { GeoPosition } from '@src/models/BeachRepository';
 import UserRepository from '@src/models/UserRepository';
 import AuthService from '@src/services/AuthService';
 
@@ -24,7 +24,7 @@ describe('Beaches functional tests', () => {
         lat: -33.792726,
         lng: 151.289824,
         name: 'Manly',
-        position: BeachPosition.E,
+        position: GeoPosition.E,
       };
 
       const response = await global.testRequest
@@ -40,7 +40,7 @@ describe('Beaches functional tests', () => {
         lat: 'invalid_string',
         lng: 151.289824,
         name: 'Manly',
-        position: BeachPosition.E,
+        position: GeoPosition.E,
       };
       const response = await global.testRequest
         .post('/beaches')

@@ -3,6 +3,8 @@ import StormGlassClient, { ForecastPoint } from '@src/clients/StormGlassClient';
 import Logger from '@src/Logger';
 import { Beach } from '@src/models/BeachRepository';
 import InternalError from '@src/util/errors/InternalError';
+import RatingService from './RatingService';
+import RatingServiceFactory from './RatingServiceFactory';
 
 export interface BeachForecast extends Omit<Beach, 'user'>, ForecastPoint { }
 
@@ -18,8 +20,15 @@ export class ForecastProcessingInternalError extends InternalError {
   }
 }
 
+interface IRatingServiceFactory {
+  create(beach: Beach): RatingService;
+}
+
 export default class ForecastService {
-  constructor(protected stormGlass = new StormGlassClient()) { }
+  constructor(
+    protected stormGlass = new StormGlassClient(),
+    protected ratingServiceFactory: IRatingServiceFactory = new RatingServiceFactory(),
+  ) { }
 
   public async processForecastForBeaches(
     beaches: Beach[],
@@ -47,20 +56,22 @@ export default class ForecastService {
     points: ForecastPoint[],
     beach: Beach,
   ): BeachForecast[] {
-    return points.map((e) => ({
+    const ratingService = this.ratingServiceFactory.create(beach);
+
+    return points.map((point) => ({
       lat: beach.lat,
       lng: beach.lng,
       name: beach.name,
       position: beach.position,
-      rating: 1,
-      time: e.time,
-      swellDirection: e.swellDirection,
-      swellHeight: e.swellHeight,
-      swellPeriod: e.swellPeriod,
-      waveDirection: e.waveDirection,
-      waveHeight: e.waveHeight,
-      windDirection: e.windDirection,
-      windSpeed: e.windSpeed,
+      rating: ratingService.getRateForPoint(point),
+      time: point.time,
+      swellDirection: point.swellDirection,
+      swellHeight: point.swellHeight,
+      swellPeriod: point.swellPeriod,
+      waveDirection: point.waveDirection,
+      waveHeight: point.waveHeight,
+      windDirection: point.windDirection,
+      windSpeed: point.windSpeed,
     }));
   }
 
