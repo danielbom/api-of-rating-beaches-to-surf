@@ -39,5 +39,5 @@ Caso você tenham algum problema com o script encontrado em `scripts/deploy.sh`,
 
 ## Referencias gerais
 
-[Video aulas](https://www.youtube.com/watch?v=rTzdy3JjZFg&list=PLz_YTBuxtxt6_Zf1h-qzNsvVt46H8ziKh&index=24&ab_channel=WaldemarNeto-DevLab)
-[Regras do Eslint](https://eslint.org/docs/user-guide/configuring/rules)
+* [Video aulas](https://www.youtube.com/watch?v=rTzdy3JjZFg&list=PLz_YTBuxtxt6_Zf1h-qzNsvVt46H8ziKh&index=24&ab_channel=WaldemarNeto-DevLab)
+* [Regras do Eslint](https://eslint.org/docs/user-guide/configuring/rules)

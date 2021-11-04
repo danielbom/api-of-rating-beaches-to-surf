@@ -3,6 +3,7 @@ import StormGlassClient, { ForecastPoint } from '@src/clients/StormGlassClient';
 import Logger from '@src/Logger';
 import { Beach } from '@src/models/BeachRepository';
 import InternalError from '@src/util/errors/InternalError';
+import { orderBy, groupBy } from 'lodash';
 import RatingService from './RatingService';
 import RatingServiceFactory from './RatingServiceFactory';
 
@@ -32,24 +33,28 @@ export default class ForecastService {
 
   public async processForecastForBeaches(
     beaches: Beach[],
+    ratingOrder: 'asc' | 'desc' = 'desc',
   ): Promise<TimeForecast[]> {
     try {
-      Logger.info(`Preparing the forecast for ${beaches.length} beaches`);
-      const allPoints = await Promise.all(
-        beaches.map(async (beach) => {
-          const points = await this.stormGlass.fetchPoints(
-            beach.lat,
-            beach.lng,
-          );
-          return this.enrichPointsData(points, beach);
-        }),
-      );
-      const pointsWithCorrectSources: BeachForecast[] = allPoints.flat();
-      return this.groupForecastByTime(pointsWithCorrectSources);
+      const allPoints = await this.calculateRating(beaches);
+      return this.groupForecastByTime(allPoints.flat(), ratingOrder);
     } catch (err: any) {
       Logger.error(err);
       throw new ForecastProcessingInternalError(err.message);
     }
+  }
+
+  private calculateRating(beaches: Beach[]): Promise<BeachForecast[][]> {
+    Logger.info(`Preparing the forecast for ${beaches.length} beaches`);
+    return Promise.all(
+      beaches.map(async (beach) => {
+        const points = await this.stormGlass.fetchPoints(
+          beach.lat,
+          beach.lng,
+        );
+        return this.enrichPointsData(points, beach);
+      }),
+    );
   }
 
   private enrichPointsData(
@@ -75,18 +80,12 @@ export default class ForecastService {
     }));
   }
 
-  private groupForecastByTime(forecasts: BeachForecast[]): TimeForecast[] {
-    /* eslint-disable */
-    const forecastByTime = forecasts.reduce((dict, x) => {
-      if (dict[x.time]) {
-        dict[x.time].push(x);
-      } else {
-        dict[x.time] = [x];
-      }
-      return dict;
-    }, {} as Record<string, BeachForecast[]>);
-    /* eslint-enable */
-
+  private groupForecastByTime(
+    forecasts: BeachForecast[],
+    ratingOrder: 'asc' | 'desc',
+  ): TimeForecast[] {
+    const ordererForecasts = orderBy(forecasts, 'rating', ratingOrder);
+    const forecastByTime = groupBy(ordererForecasts, 'time');
     return Object.entries(forecastByTime).map(([time, forecast]) => ({
       time,
       forecast,
