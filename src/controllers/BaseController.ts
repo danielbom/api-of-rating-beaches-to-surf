@@ -34,7 +34,7 @@ export default abstract class BaseController {
     if (duplicatedValidationErrors.length > 0) {
       return { code: 409, error: error.message };
     }
-    return { code: 422, error: error.message };
+    return { code: 400, error: error.message };
   }
 
   protected sendErrorResponse(response: Response, apiError: APIError) {

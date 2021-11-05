@@ -11,7 +11,7 @@ describe('Rating Service', () => {
   };
   const defaultRating = new RatingService(defaultBeach);
 
-  describe.only('Calculate rating for a given point', () => {
+  describe('Calculate rating for a given point', () => {
     const defaultPoint = {
       swellDirection: 110,
       swellHeight: 0.1,

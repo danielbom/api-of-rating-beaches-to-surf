@@ -19,6 +19,7 @@ Para ignorar execuções das etapas durante o commit é necessário utilizar `--
 10. O `github workflow` foi configurado de forma distinta para evitar o deploy na master.
 11. O `postman/insominia` foram descartados em virtude do desejo em utilizar o `CURL` em testes manuais, e assim ter um contato mais direto com ferramentas de terminal.
 12. Foi utilizado o padrão `Factory` para evitar a passagem de classes concretas por construtor na classe 'ForecastService', como foi feito pelo Waldemar. Comentei no seu [vídeo](https://www.youtube.com/watch?v=H_a1zliq5KA&list=PLz_YTBuxtxt6_Zf1h-qzNsvVt46H8ziKh&index=36&ab_channel=WaldemarNeto-DevLab) sobre e ele me pediu para realizar uma implementação para poder mostrar as diferenças de implementação. Este padrão é muito utilizado em Java e simplesmente exige uma interface intermediária que cria a classe alvo, neste caso era o `RatingService`. A classe concreta para este papel é a `RatingServiceFactory`.
+13. O parametro da autenticação foi alterado de `x-access-token` para `authorization`.
 
 ## Get started (Inicializando o projeto)
 
