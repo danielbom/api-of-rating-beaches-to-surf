@@ -4,6 +4,7 @@ import apiForecastResponse1Beach from '@test/fixture/api_forecast_response_1_bea
 import BeachRepository, { GeoPosition } from '@src/models/BeachRepository';
 import UserRepository from '@src/models/UserRepository';
 import AuthService from '@src/services/AuthService';
+import Cache from '@src/util/Cache';
 
 describe('Beach forecast functional tests', () => {
   const defaultUser = {
@@ -55,8 +56,10 @@ describe('Beach forecast functional tests', () => {
     expect(body).toEqual(apiForecastResponse1Beach);
   });
 
-  it.skip('should return 500 if something goes wrong during the processing', async () => {
-    // Not working because mocks
+  it('should return 500 if something goes wrong during the processing', async () => {
+    jest
+      .spyOn(Cache, 'get')
+      .mockImplementationOnce(() => undefined);
 
     nock('https://api.stormglass.io:443', {
       encodedQueryParams: true,
