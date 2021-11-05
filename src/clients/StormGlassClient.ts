@@ -3,12 +3,15 @@ import InternalError from '@src/util/errors/InternalError';
 import config, { IConfig } from 'config';
 import HttpClient from '@src/util/HttpClient';
 import Timer from '@src/util/Timer';
+import Cache from '@src/util/Cache';
+import Logger from '@src/Logger';
 
 const stormGlassResourceConfig: IConfig = config.get(
   'App.resources.StormGlass',
 );
 const STORM_GLASS_API_URL = stormGlassResourceConfig.get<string>('apiUrl');
 const STORM_GLASS_API_TOKEN = stormGlassResourceConfig.get<string>('apiToken');
+const STORM_GLASS_API_CACHE_TTL = stormGlassResourceConfig.get<number>('cacheApiTtl');
 
 export interface StormGlassPointSource {
   [key: string]: number | undefined;
@@ -63,9 +66,46 @@ export default class StormGlassClient {
 
   readonly stormGlassAPISource = 'noaa';
 
-  constructor(protected httpClient = new HttpClient()) { }
+  constructor(
+    protected httpClient = new HttpClient(),
+    protected cache = Cache,
+  ) { }
 
-  async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
+  public async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
+    const key = this.getCacheKey(lat, lng);
+    const cachedForecastPoints = this.getPointsFromCache(key);
+    if (cachedForecastPoints) { return cachedForecastPoints; }
+
+    const forecastPoints = await this.getPointsFromApi(lat, lng);
+    this.setForecastPointsInCache(key, forecastPoints);
+    return forecastPoints;
+  }
+
+  setForecastPointsInCache(key: string, forecastPoints: ForecastPoint[]): void {
+    Logger.info(`Update cache to return forecast points for key: ${key}`);
+    this.cache.set(
+      key,
+      forecastPoints,
+      STORM_GLASS_API_CACHE_TTL,
+    );
+  }
+
+  getPointsFromCache(key: string): ForecastPoint[] | undefined {
+    const forecastPointsFromCache = this.cache.get<ForecastPoint[]>(key);
+
+    if (!forecastPointsFromCache) {
+      return undefined;
+    }
+
+    Logger.info(`Using cache to return forecast points for key: ${key}`);
+    return forecastPointsFromCache;
+  }
+
+  getCacheKey(lat: number, lng: number) {
+    return `forecast_points_${lat}_${lng}`;
+  }
+
+  protected async getPointsFromApi(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {
       const endTimestamp = Timer.getUnixTimeForAFutureDay(1);
       const response = await this.httpClient.get<StormGlassForecastResponse>(

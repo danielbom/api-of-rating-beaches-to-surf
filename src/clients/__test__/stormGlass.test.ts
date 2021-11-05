@@ -1,13 +1,17 @@
 import stormGlassWeather3Hours from '@test/fixture/stormglass_weather_3_hours.json';
 import stormGlassWeather3HoursNormalized from '@test/fixture/stormglass_normalized_response_3_hours.json';
 import HttpClient, { HttpResponse } from '@src/util/HttpClient';
+import Cache from '@src/util/Cache';
 import StormGlassClient from '../StormGlassClient';
 
 jest.mock('@src/util/HttpClient');
+jest.mock('@src/util/Cache');
 
 describe('StormGlass client', () => {
   const MockedHttpClientClass = HttpClient as jest.Mocked<typeof HttpClient>;
   const mockedHttpClient = new HttpClient() as jest.Mocked<HttpClient>;
+
+  const mockedCache = Cache as jest.Mocked<typeof Cache>;
 
   it('should return the normalized forecast from the StormGlass service', async () => {
     const lat = -33.12312;
@@ -17,7 +21,8 @@ describe('StormGlass client', () => {
       data: stormGlassWeather3Hours,
     } as HttpResponse);
 
-    const stormGlass = new StormGlassClient(mockedHttpClient);
+    mockedCache.get.mockReturnValue(undefined);
+    const stormGlass = new StormGlassClient(mockedHttpClient, mockedCache);
     const response = await stormGlass.fetchPoints(lat, lng);
     expect(response).toEqual(stormGlassWeather3HoursNormalized);
   });
