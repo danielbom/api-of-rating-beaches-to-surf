@@ -15,7 +15,7 @@ describe('Beaches functional tests', () => {
     await UserRepository.deleteMany();
     const user = await new UserRepository(defaultUser).save();
     const userId = user.id.toString();
-    token = AuthService.generateToken({ id: userId });
+    token = AuthService.generateToken({ sub: userId });
   });
 
   describe('When creating a beach', () => {
@@ -58,7 +58,7 @@ describe('Beaches functional tests', () => {
     it('should return 500 when there is any error other than validation error', async () => {
       jest
         .spyOn(BeachRepository.prototype, 'save')
-        .mockImplementationOnce(() => Promise.reject('fail to create beach'));
+        .mockImplementationOnce(() => Promise.reject(new Error('fail to create beach')));
 
       const newBeach = {
         lat: -33.792726,

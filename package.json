@@ -9,16 +9,17 @@
     "dev": "dotenv -e .env -- ts-node-dev  --ignore-watch node_modules \"./src/index.ts\" | npx pino-pretty -c -i \"hostname\"",
     "lint": "eslint ./src ./test --ext .ts",
     "lint:fix": "eslint ./src ./test --ext .ts --fix",
-    "test": "yarn test:unit && yarn test:functional",
+    "test": "yarn lint && yarn test:unit && yarn test:functional",
     "test:unit": "dotenv -e .env -- jest",
     "test:watch": "dotenv -e .env -- jest --watch",
     "test:functional": "dotenv -e .env -- jest --projects ./test --runInBand",
-    "ts:type-check": "tsc --noEmit"
+    "ts:check-types": "tsc --noEmit"
   },
   "pre-commit": [
     "lint:fix",
-    "ts:type-check",
-    "test"
+    "ts:check-types",
+    "test:unit",
+    "test:functional"
   ],
   "keywords": [],
   "author": "",

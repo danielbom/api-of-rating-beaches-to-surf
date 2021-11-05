@@ -38,9 +38,8 @@ export default class UsersController extends BaseController {
         password,
       );
       if (isPasswordValid) {
-        const userData = user.toJSON();
-        const token = AuthService.generateToken({ id: userData.id });
-        response.send({ ...userData, token });
+        const token = AuthService.generateToken({ sub: user.id.toString() });
+        response.send({ ...user.toJSON(), token });
       } else {
         this.sendErrorResponse(response, {
           code: 401,

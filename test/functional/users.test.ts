@@ -106,7 +106,7 @@ describe('Users functional tests', () => {
         password: '1234',
       };
       const user = await new UserRepository(newUser).save();
-      const token = AuthService.generateToken({ id: user.id.toString() });
+      const token = AuthService.generateToken({ sub: user.id.toString() });
       const { body, status } = await global.testRequest
         .get('/users/me')
         .set({ Authorization: `Bearer ${token}` });
@@ -123,7 +123,7 @@ describe('Users functional tests', () => {
       };
       // create a new user but don't save it
       const user = new UserRepository(newUser);
-      const token = AuthService.generateToken({ id: user.id.toString() });
+      const token = AuthService.generateToken({ sub: user.id.toString() });
       const { body, status } = await global.testRequest
         .get('/users/me')
         .set({ Authorization: `Bearer ${token}` });

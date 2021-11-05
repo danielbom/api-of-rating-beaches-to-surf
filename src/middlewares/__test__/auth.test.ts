@@ -4,7 +4,7 @@ import authMiddleware from '../authMiddleware';
 
 describe('AuthMiddleware', () => {
   it('should verify a JWT token and call the next middleware', () => {
-    const jwtToken = AuthService.generateToken({ data: 'fake' });
+    const jwtToken = AuthService.generateToken({ sub: 'fake' });
     const reqFake = {
       headers: {
         authorization: `Bearer ${jwtToken}`,
