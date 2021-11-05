@@ -2,10 +2,13 @@
 import InternalError from '@src/util/errors/InternalError';
 import config, { IConfig } from 'config';
 import HttpClient from '@src/util/HttpClient';
+import Timer from '@src/util/Timer';
 
 const stormGlassResourceConfig: IConfig = config.get(
   'App.resources.StormGlass',
 );
+const STORM_GLASS_API_URL = stormGlassResourceConfig.get<string>('apiUrl');
+const STORM_GLASS_API_TOKEN = stormGlassResourceConfig.get<string>('apiToken');
 
 export interface StormGlassPointSource {
   [key: string]: number | undefined;
@@ -60,18 +63,22 @@ export default class StormGlassClient {
 
   readonly stormGlassAPISource = 'noaa';
 
-  constructor(protected httpClient = new HttpClient()) {}
+  constructor(protected httpClient = new HttpClient()) { }
 
   async fetchPoints(lat: number, lng: number): Promise<ForecastPoint[]> {
     try {
-      const STORM_GLASS_API_URL = stormGlassResourceConfig.get('apiUrl');
-      const url = `${STORM_GLASS_API_URL}/weather/point?lat=${lat}&lng=${lng}&params=${this.stormGlassAPIParams}&source=${this.stormGlassAPISource}`;
+      const endTimestamp = Timer.getUnixTimeForAFutureDay(1);
       const response = await this.httpClient.get<StormGlassForecastResponse>(
-        url,
+        `${STORM_GLASS_API_URL}/weather/point`,
         {
-          headers: {
-            Authorization: 'fake-token',
+          params: {
+            lat,
+            lng,
+            params: this.stormGlassAPIParams,
+            source: this.stormGlassAPISource,
+            end: endTimestamp,
           },
+          headers: { Authorization: STORM_GLASS_API_TOKEN },
         },
       );
       return this.normalizeResponse(response.data);

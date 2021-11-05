@@ -44,6 +44,7 @@ describe('Beach forecast functional tests', () => {
         params:
           'swellDirection%2CswellHeight%2CswellPeriod%2CwaveDirection%2CwaveHeight%2CwindDirection%2CwindSpeed',
         source: 'noaa',
+        end: /.?/,
       })
       .reply(200, stormGlassWeather3Hours);
 
