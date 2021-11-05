@@ -53,7 +53,7 @@ export default class UsersController extends BaseController {
   @Get('me')
   @Middleware(authMiddleware)
   public async me(request: Request, response: Response): Promise<void> {
-    const userId = request?.decoded?.id;
+    const userId = request?.context?.id;
     const user = await UserRepository.findById(userId);
     if (!user) {
       this.sendErrorResponse(response, {

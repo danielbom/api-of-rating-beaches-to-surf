@@ -10,7 +10,7 @@ export default class BeachesController extends BaseController {
   @Post('')
   public async create(request: Request, response: Response): Promise<void> {
     try {
-      const userId = request?.decoded?.id;
+      const userId = request?.context?.id;
       const beach = new BeachRepository({ ...request.body, user: userId });
       const result = await beach.save();
       response.status(201).send(result);

@@ -6,13 +6,13 @@
   "scripts": {
     "build": "tsc",
     "start": "yarn build && node dist/src/index.js",
-    "dev": "ts-node-dev  --ignore-watch node_modules \"./src/index.ts\" | npx pino-pretty -c -i \"hostname\"",
+    "dev": "dotenv -e .env -- ts-node-dev  --ignore-watch node_modules \"./src/index.ts\" | npx pino-pretty -c -i \"hostname\"",
     "lint": "eslint ./src ./test --ext .ts",
     "lint:fix": "eslint ./src ./test --ext .ts --fix",
     "test": "yarn test:unit && yarn test:functional",
-    "test:unit": "jest",
-    "test:watch": "jest --watch",
-    "test:functional": "jest --projects ./test --runInBand",
+    "test:unit": "dotenv -e .env -- jest",
+    "test:watch": "dotenv -e .env -- jest --watch",
+    "test:functional": "dotenv -e .env -- jest --projects ./test --runInBand",
     "ts:type-check": "tsc --noEmit"
   },
   "pre-commit": [
@@ -25,12 +25,12 @@
   "license": "ISC",
   "dependencies": {
     "@overnightjs/core": "^1.7.6",
-    "@types/http-status-codes": "^1.2.0",
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "config": "^3.3.6",
     "cors": "^2.8.5",
+    "dotenv-cli": "^4.1.0",
     "express": "^4.17.1",
     "express-openapi-validator": "^4.13.2",
     "express-pino-logger": "^6.0.0",
@@ -45,6 +45,7 @@
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
+    "@types/http-status-codes": "^1.2.0",
     "@types/axios": "^0.14.0",
     "@types/bcrypt": "^5.0.0",
     "@types/config": "^0.0.40",

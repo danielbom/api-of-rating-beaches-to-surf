@@ -44,7 +44,7 @@ export default class ForecastController extends BaseController {
   ): Promise<void> {
     try {
       const ratingOrder = this.ratingOrderMap[request.query.order?.toString() ?? 'desc'];
-      const userId = request?.decoded?.id;
+      const userId = request?.context?.id;
       const beaches = await BeachRepository.find({ user: userId });
       const forecastData = await this.forecastService.processForecastForBeaches(
         beaches as unknown as Beach[],

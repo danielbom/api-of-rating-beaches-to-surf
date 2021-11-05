@@ -10,7 +10,7 @@ export default function authMiddleware(
   try {
     if (!token) throw new Error('jwt must be provided');
     const decoded = AuthService.decodeToken(token.replace(/^Bearer /, ''));
-    request.decoded = decoded;
+    request.context = decoded;
     next();
   } catch (err: any) {
     response.status(401).send({ code: 401, error: err.message });
