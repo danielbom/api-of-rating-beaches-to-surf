@@ -42,3 +42,4 @@ Caso você tenham algum problema com o script encontrado em `scripts/deploy.sh`,
 
 * [Video aulas](https://www.youtube.com/watch?v=rTzdy3JjZFg&list=PLz_YTBuxtxt6_Zf1h-qzNsvVt46H8ziKh&index=24&ab_channel=WaldemarNeto-DevLab)
 * [Regras do Eslint](https://eslint.org/docs/user-guide/configuring/rules)
+* [Melhore seu servidor com 4 Pacotes Express](https://www.youtube.com/watch?v=DN3gekEPtrg&ab_channel=VictorMoraes)

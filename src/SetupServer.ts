@@ -1,19 +1,23 @@
 import './util/module-alias';
-import { Server } from '@overnightjs/core';
-import cors from 'cors';
+
+import * as OpenApiValidator from 'express-openapi-validator';
+import compression from 'compression';
 import config from 'config';
+import cors from 'cors';
 import express, { Application } from 'express';
 import expressPino from 'express-pino-logger';
+import helmet from 'helmet';
 import http from 'http';
 import swaggerUi from 'swagger-ui-express';
-import * as OpenApiValidator from 'express-openapi-validator';
+import { Server } from '@overnightjs/core';
+
 import apiSchema from './api-schema.json';
+import Logger from './Logger';
 import Database from './Database';
+import apiErrorValidator from './middlewares/apiErrorValidator';
 import ForecastController from './controllers/ForecastController';
 import BeachesController from './controllers/BeachesController';
 import UsersController from './controllers/UserController';
-import Logger from './Logger';
-import apiErrorValidator from './middlewares/apiErrorValidator';
 
 export default class SetupServer extends Server {
   private server?: http.Server;
@@ -35,6 +39,8 @@ export default class SetupServer extends Server {
   }
 
   private setupExpress(): void {
+    this.app.use(helmet());
+    this.app.use(compression());
     this.app.use(express.json());
     this.app.use(expressPino({
       logger: Logger,
