@@ -20,7 +20,8 @@
         },
         "logger": {
             "enabled": "LOGGER_ENABLED",
-            "level": "LOGGER_LEVEL"
+            "level": "LOGGER_LEVEL",
+            "prettyPrint": "LOGGER_PRETTIER"
         }
     }
 }
