@@ -1,6 +1,6 @@
 import Logger from '@src/Logger';
 import AuthService from '@src/services/AuthService';
-import mongoose, { Document, Model } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export interface User {
   _id?: string;
@@ -15,7 +15,7 @@ export enum CustomValidation {
 
 interface UserModel extends Omit<User, '_id'>, Document { }
 
-const schema = new mongoose.Schema(
+const schema = new mongoose.Schema<UserModel>(
   {
     name: { type: String, required: true },
     email: {
@@ -63,5 +63,5 @@ schema.virtual('id').get(function getUserId(this: UserModel) {
   return this._id;
 });
 
-const UserRepository: Model<UserModel> = mongoose.model('User', schema);
+const UserRepository = mongoose.model('User', schema);
 export default UserRepository;

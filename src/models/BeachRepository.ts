@@ -1,4 +1,4 @@
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 export enum GeoPosition {
   S = 'S',
@@ -16,13 +16,13 @@ export interface Beach {
   user: string;
 }
 
-const schema = new mongoose.Schema(
+const schema = new mongoose.Schema<BeachModel>(
   {
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
     name: { type: String, required: true },
     position: { type: String, required: true },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    user: { type: mongoose.Schema.Types.ObjectId as any, ref: 'User', required: true },
   },
   {
     toJSON: {
@@ -39,6 +39,6 @@ const schema = new mongoose.Schema(
 
 interface BeachModel extends Omit<Beach, '_id'>, Document { }
 
-const BeachRepository: Model<BeachModel> = mongoose.model('Beach', schema);
+const BeachRepository = mongoose.model('Beach', schema);
 
 export default BeachRepository;
