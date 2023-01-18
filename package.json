@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "start": "dotenv -e .env -- node dist/src/index.js",
+    "build": "tsc --project tsconfig.build.json",
+    "start": "dotenv -e .env -- node dist/index.js",
     "start:local": "yarn build && yarn start",
     "dev": "dotenv -e .env -- tsx watch \"./src/index.ts\"",
     "lint": "eslint ./src ./test --ext .ts",
