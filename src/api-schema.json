@@ -162,6 +162,33 @@
       }
     },
     "/beaches": {
+      "get": {
+        "security": [
+          {
+            "apiKey": []
+          }
+        ],
+        "tags": [
+          "Beach"
+        ],
+        "description": "List the authenticated user beaches",
+        "operationId": "listBeach",
+        "responses": {
+          "200": {
+            "description": "The Beach has been created!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BeachListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          }
+        }
+      },
       "post": {
         "security": [
           {
@@ -526,6 +553,12 @@
               }
             }
           }
+        }
+      },
+      "BeachListResponse": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Beach"
         }
       },
       "BeachCreatedResponse": {
