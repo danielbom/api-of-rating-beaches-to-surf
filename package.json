@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
+    "build": "tsup --config tsconfig.build.json src/index.ts --clean --minify",
     "start": "dotenv -e .env -- node dist/index.js",
     "start:local": "yarn build && yarn start",
     "dev": "dotenv -e .env -- tsx watch \"./src/index.ts\"",
@@ -78,6 +78,7 @@
     "pre-commit": "^1.2.2",
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.7",
+    "tsup": "^6.5.0",
     "tsx": "^3.12.2",
     "typescript": "^4.4.4"
   }
